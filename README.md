@@ -26,4 +26,13 @@ npm start
 Markdown parser
 
 - [ToastMark라이브러리](https://github.com/nhn/tui.editor)
+
+  - star 13k
+  - [차트 작성](https://github.com/nhn/tui.editor/tree/master/plugins/chart)
+  - [글자 색상 변화](https://github.com/nhn/tui.editor/tree/master/plugins/color-syntax)
+  - [코드 구문 강조](https://github.com/nhn/tui.editor/tree/master/plugins/code-syntax-highlight)
+  - [uml작성](https://github.com/nhn/tui.editor/tree/master/plugins/uml)
+  - 이미지와 사용 예제가 있어서 이해 및 적용하기 편리합니다.
+  - [문서페이지](https://ui.toast.com/)가 있어서 참고하기 편리합니다
+
 - [react-markdown](https://www.npmjs.com/package/react-markdown)
