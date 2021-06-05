@@ -34,7 +34,7 @@ module.exports = {
     'import/extensions': 'off',
     'no-use-before-define': 'off',
     'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
-    indent: ['error', 2],
+    indent: 'off',
     'no-trailing-spaces': 'error',
     curly: 'error',
     'brace-style': 'error',
@@ -58,5 +58,6 @@ module.exports = {
     'react/prop-types': 'off',
     'linebreak-style': 'off',
     'no-proto': 'off',
+    'react/prefer-stateless-function': 'off',
   },
 };

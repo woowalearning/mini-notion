@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { Component } from 'react';
+import './App.css';
+import PageContainer from './components/PageContainer';
 
-export default function App() {
-  return (
-    <h1>woowahan learning</h1>
-  );
-};
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <PageContainer />
+      </div>
+    );
+  }
+}
+
+export default App;
