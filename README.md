@@ -55,3 +55,12 @@ Draft js
 - [UL구현](https://codesandbox.io/s/floral-frog-lgdo7?file=/src/App.tsx)
 
 ![image](https://user-images.githubusercontent.com/58525009/121153105-be5bfa00-c880-11eb-99e6-28a334ae0d37.png)
+
+Slate
+
+- rich text editor framework for React
+- 다양한 커스터마이징이 가능합니다.
+- react가 아닌 다른 프레임워크로도 가능합니다.
+- [기본출력](https://codesandbox.io/s/dreamy-silence-gbs3w?file=/src/App.tsx)
+
+![image](https://user-images.githubusercontent.com/58525009/121162964-5c53c280-c889-11eb-8b6c-89fe7b0e16ac.png)
