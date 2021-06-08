@@ -6,7 +6,11 @@ import { AuthPlus } from 'googleapis-common';
 @Injectable()
 export class OAuthService {
   async getCallback(code: string) {
-    const { tokens: accessToken } = await this.googleOauthClient.getToken(code);
+    this.googleOauthClient.setCredentials({
+      id_token: code,
+    });
+    const { token: accessToken } =
+      await this.googleOauthClient.getAccessToken();
 
     return accessToken;
   }
