@@ -21,11 +21,11 @@ npm install
 npm start
 ```
 
-## library
+## 제안 library
 
 Markdown parser
 
-- [ToastMark라이브러리](https://github.com/nhn/tui.editor)
+- [Toast UI 라이브러리](https://github.com/nhn/tui.editor)
 
   - star 13k
   - [차트 작성](https://github.com/nhn/tui.editor/tree/master/plugins/chart)
@@ -36,3 +36,22 @@ Markdown parser
   - [문서페이지](https://ui.toast.com/)가 있어서 참고하기 편리합니다
 
 - [react-markdown](https://www.npmjs.com/package/react-markdown)
+
+## 제안의 문제점
+
+Toast UI
+
+- 리액트가 일부 있지만 기본 코드가 vanilla js로 되어있어서 기술 스택이 맞지 않습니다.
+
+- 올인원 에디터로 다양한 커스터마징을 위한 인터페이스를 제공하지 않습니다.
+
+## 다른 제안
+
+Draft js
+
+- rich text editor framework for React
+- 다양한 커스터마이징이 가능합니다.
+- 기본 컨셉에 대한 충분한 이해가 필요합니다.
+- [UL구현](https://codesandbox.io/s/floral-frog-lgdo7?file=/src/App.tsx)
+
+![image](https://user-images.githubusercontent.com/58525009/121153105-be5bfa00-c880-11eb-99e6-28a334ae0d37.png)
