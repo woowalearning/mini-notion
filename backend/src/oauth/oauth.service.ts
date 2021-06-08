@@ -6,16 +6,9 @@ import { AuthPlus } from 'googleapis-common';
 @Injectable()
 export class OAuthService {
   async getCallback(code: string) {
-    // grab the url that will be used for authorization
-    const authorizeUrl = this.googleOauthClient.generateAuthUrl({
-      access_type: 'offline',
-    });
     const { tokens: accessToken } = await this.googleOauthClient.getToken(code);
 
-    return {
-      authorizeUrl,
-      accessToken,
-    };
+    return accessToken;
   }
 
   constructor(private readonly config: ConfigService) {

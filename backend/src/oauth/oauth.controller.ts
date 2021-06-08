@@ -11,13 +11,8 @@ export class OAuthController {
     @Query('id_token') id_token: string,
     @Res() res: Response,
   ): Promise<void> {
-    const { accessToken, authorizeUrl } = await this.oauthService.getCallback(
-      id_token,
-    );
+    const accessToken = await this.oauthService.getCallback(id_token);
 
-    res.json({
-      accessToken,
-      authorizeUrl,
-    });
+    res.redirect(`http://localhost:8080/?token=${accessToken}`);
   }
 }
