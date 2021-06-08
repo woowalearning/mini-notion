@@ -58,5 +58,7 @@ module.exports = {
     'react/prop-types': 'off',
     'linebreak-style': 'off',
     'no-proto': 'off',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'error',
   },
 };
