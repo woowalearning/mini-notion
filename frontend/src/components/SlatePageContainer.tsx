@@ -85,9 +85,12 @@ const SlatePageContainer: React.FC = () => {
           switch (event.key) {
             case '`': {
               event.preventDefault();
-              const [match]: any = Editor.nodes(editor, {
-                match: (n) => Element.isElement(n) && n.type === 'code',
-              });
+              // 제네레이터로 구성되어 있음
+              const [match]: any = [
+                ...Editor.nodes(editor, {
+                  match: (n) => Element.isElement(n) && n.type === 'code',
+                }),
+              ];
               Transforms.setNodes(
                 editor,
                 { type: match ? 'paragraph' : 'code' },
@@ -97,9 +100,11 @@ const SlatePageContainer: React.FC = () => {
             }
             case '*': {
               event.preventDefault();
-              const [bullet]: any = Editor.nodes(editor, {
-                match: (n) => Element.isElement(n) && n.type === 'bullet',
-              });
+              const [bullet]: any = [
+                ...Editor.nodes(editor, {
+                  match: (n) => Element.isElement(n) && n.type === 'bullet',
+                }),
+              ];
               Transforms.setNodes(
                 editor,
                 { type: bullet ? 'paragraph' : 'bullet' },
@@ -109,10 +114,7 @@ const SlatePageContainer: React.FC = () => {
             }
             case 'b': {
               event.preventDefault();
-              Transforms.setNodes(editor, { bold: true } as any, {
-                match: (n) => Text.isText(n),
-                split: true,
-              });
+              toggleFormat(editor, 'bold');
               break;
             }
             default: {
@@ -128,10 +130,12 @@ const SlatePageContainer: React.FC = () => {
 export default SlatePageContainer;
 
 const isFormatActive = (editor: any, format: any) => {
-  const [match] = Editor.nodes(editor, {
-    match: (n: any) => n[format] === true,
-    mode: 'all',
-  }) as any;
+  const [match] = [
+    ...Editor.nodes(editor, {
+      match: (n: any) => n[format] === true,
+      mode: 'all',
+    }),
+  ] as any;
   return !!match;
 };
 
