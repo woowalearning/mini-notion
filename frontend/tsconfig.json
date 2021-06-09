@@ -7,12 +7,17 @@
     "noEmit": false,
     "strict": true,
     "moduleResolution": "node",
-    "baseUrl": "./src",
+    "baseUrl": "src",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true       
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [
+      "../node_modules/@types",
+      "./node_modules/@types",
+      "./src/type-declares"
+    ]
   },
   "include": [
-    "src"
+    "src",
   ]
 }

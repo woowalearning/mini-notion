@@ -1,0 +1,9 @@
+{
+	"private": true,
+	"name": "mini-notion",
+	"workspaces": ["frontend", "backend"],
+	"scripts": {
+		"fe/dev": "yarn workspace frontend start",
+		"be/dev": "yarn workspace backend start:dev"
+	}
+}
