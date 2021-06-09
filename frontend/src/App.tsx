@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 // import useGapiService from 'utils/google-oauth2';
+import CustomEditor from './components/CustomEditor';
 import GapiOAuth2Button from './components/GapiOAuth2Button';
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
     <>
       {isSignedIn ? '로그인 후' : <GapiOAuth2Button>로그인</GapiOAuth2Button>}
       <h1>woowahan learning</h1>
+      <CustomEditor />
     </>
   );
 }

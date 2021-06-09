@@ -8,6 +8,7 @@ module.exports = (env, options) => {
     entry: './src/index.tsx',
     devtool: 'source-map',
     resolve: {
+      modules: ['../node_modules'],
       extensions: ['.ts', '.tsx', '.js'],
     },
     module: {
