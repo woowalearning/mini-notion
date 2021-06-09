@@ -5,8 +5,13 @@ import { useDispatch } from 'react-redux';
 import { logoutUser } from '../../_actions/user_action';
 import { withRouter } from 'react-router-dom';
 import { getTokenId } from '../../utils/storage';
+import { History } from 'history';
 
-const Editor: React.FC = (props: any) => {
+interface Props {
+    history: History;
+}
+
+const LogoutButton: React.FC<Props> = props => {
     const dispatch = useDispatch();
 
     const googleLogoutSuccess = async () => {
@@ -36,4 +41,4 @@ const Editor: React.FC = (props: any) => {
     )
 }
 
-export default withRouter(Editor);
+export default withRouter(LogoutButton);

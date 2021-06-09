@@ -1,17 +1,22 @@
 import React from 'react';
-import GoogleLogin from 'react-google-login';
-import {loginUser} from '../../_actions/user_action';
-import {useDispatch} from 'react-redux';
-import {withRouter} from 'react-router-dom';
-import {googleApiKey} from '../../api/key';
-import {setTokenId} from '../../utils/storage';
+import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import { loginUser } from '../../_actions/user_action';
+import { useDispatch } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { googleApiKey } from '../../api/key';
+import { setTokenId } from '../../utils/storage';
+import { History } from 'history';
 
-const GoogleLoginButton: React.FC = (props: any) => {
+interface Props {
+    history: History;
+}
+
+const GoogleLoginButton: React.FC<Props> = (props) => {
     const dispatch = useDispatch();
 
-    const googleLoginSuccess = async (response: any) => {
-        const profile = response.profileObj;
-        const tokenId = response.tokenId;
+    const googleLoginSuccess = async (response: (GoogleLoginResponse | GoogleLoginResponseOffline)) => {
+        const profile = (response as GoogleLoginResponse).profileObj;
+        const tokenId = (response as GoogleLoginResponse).tokenId;
         const body = {
             email: profile.email,
             name: profile.name,

@@ -4,7 +4,7 @@ import {
   Route
 } from 'react-router-dom';
 import LoginPage from './components/LoginPage/LoginPage';
-import Editor from './components/Editor/Editor';
+import EditorPage from './components/Editor/EditorPage';
 import Auth from './hoc/auth';
 import NaverLoginGetProfile from './components/LoginPage/NaverLoginGetProfile';
 
@@ -14,7 +14,7 @@ const App: React.FC = () => {
       <h1>우아한 테크러닝</h1>
       <Router>
         <Route exact path="/" component={Auth(LoginPage, false)} />
-        <Route exact path="/editor" component={Auth(Editor, true)} />
+        <Route exact path="/editor" component={Auth(EditorPage, true)} />
         <Route path="/naver-login">
           <NaverLoginGetProfile />
         </Route>
