@@ -6,13 +6,10 @@ import { AuthPlus } from 'googleapis-common';
 @Injectable()
 export class OAuthService {
   async getCallback(code: string) {
-    this.googleOauthClient.setCredentials({
-      id_token: code,
-    });
-    const { token: accessToken } =
-      await this.googleOauthClient.getAccessToken();
-
-    return accessToken;
+    const {
+      tokens: { access_token },
+    } = await this.googleOauthClient.getToken(code);
+    return access_token;
   }
 
   constructor(private readonly config: ConfigService) {
@@ -20,7 +17,7 @@ export class OAuthService {
     this.googleOauthClient = new google.auth.OAuth2(
       config.get('GOOGLE_CLIENT_ID'),
       config.get('GOOGLE_SECRET_KEY'),
-      'http://localhost:3000',
+      'http://localhost:3000/oauth/google/callback',
     );
 
     google.options({ auth: this.googleOauthClient });

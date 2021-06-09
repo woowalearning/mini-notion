@@ -8,10 +8,11 @@ export class OAuthController {
 
   @Get('google/callback')
   async getOauth(
-    @Query('id_token') id_token: string,
+    @Query('code') code: string,
     @Res() res: Response,
   ): Promise<void> {
-    const accessToken = await this.oauthService.getCallback(id_token);
+    console.log(code);
+    const accessToken = await this.oauthService.getCallback(code);
 
     res.redirect(`http://localhost:8080/?token=${accessToken}`);
   }
