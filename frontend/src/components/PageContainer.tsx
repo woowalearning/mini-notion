@@ -5,11 +5,10 @@ import BlockStyleToolbar, {
 } from './blockStyles/BlockStyleToolbar';
 import '../App.css';
 
-interface Props {
-}
+interface Props {}
 
 interface State {
-  editorState: EditorState
+  editorState: EditorState;
 }
 
 class PageContainer extends React.Component<Props, State> {
@@ -33,10 +32,7 @@ class PageContainer extends React.Component<Props, State> {
 
   handleKeyCommand = (command: string) => {
     const { editorState } = this.state;
-    const newState = RichUtils.handleKeyCommand(
-      editorState,
-      command,
-    );
+    const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       this.onChange(newState);
       return 'handled';
@@ -46,9 +42,7 @@ class PageContainer extends React.Component<Props, State> {
 
   onUnderlineClick = () => {
     const { editorState } = this.state;
-    this.onChange(
-      RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'),
-    );
+    this.onChange(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'));
   };
 
   onBoldClick = () => {
@@ -58,9 +52,7 @@ class PageContainer extends React.Component<Props, State> {
 
   onItalicClick = () => {
     const { editorState } = this.state;
-    this.onChange(
-      RichUtils.toggleInlineStyle(editorState, 'ITALIC'),
-    );
+    this.onChange(RichUtils.toggleInlineStyle(editorState, 'ITALIC'));
   };
 
   toggleBlockType = (blockType: string) => {
@@ -77,13 +69,25 @@ class PageContainer extends React.Component<Props, State> {
             editorState={editorState}
             onToggle={this.toggleBlockType}
           />
-          <button type="button" className="styleButton" onClick={this.onUnderlineClick}>
+          <button
+            type="button"
+            className="styleButton"
+            onClick={this.onUnderlineClick}
+          >
             U
           </button>
-          <button type="button" className="styleButton" onClick={this.onBoldClick}>
+          <button
+            type="button"
+            className="styleButton"
+            onClick={this.onBoldClick}
+          >
             <b>B</b>
           </button>
-          <button type="button" className="styleButton" onClick={this.onItalicClick}>
+          <button
+            type="button"
+            className="styleButton"
+            onClick={this.onItalicClick}
+          >
             <em>I</em>
           </button>
         </div>
