@@ -1,48 +1,79 @@
-import React, { PropsWithChildren, Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  HTMLAttributes,
+  PropsWithChildren,
+  Ref,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import ReactDOM from 'react-dom';
-import { BaseEditor, createEditor, Editor, Element, Text, Transforms } from 'slate';
-import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
+import { BaseEditor, BaseRange, createEditor, Editor, Element, Text, Transforms } from 'slate';
+import {
+  Editable,
+  ReactEditor,
+  RenderElementProps,
+  RenderLeafProps,
+  Slate,
+  useSlate,
+  withReact,
+} from 'slate-react';
 import { cx, css } from '@emotion/css';
 
-type CustomElement = { type: string; children: CustomText[] };
+type CustomElement<T> = { attributes: HTMLAttributes<T>; children: CustomText[]; type?: string };
 type CustomText = { text: string };
 
 declare module 'slate' {
   // eslint-disable-next-line no-unused-vars
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor;
-    Element: CustomElement;
+    Element: CustomElement<HTMLElement>;
     Text: CustomText;
   }
 }
 
-const CodeElement = ({ attributes, children }: any) => (
+const CodeElement = ({ attributes, children }: CustomElement<HTMLPreElement>) => (
   <pre {...attributes}>
     <code>{children}</code>
   </pre>
 );
 
-const BulletElement = ({ attributes, children }: any) => (
+const BulletElement = ({ attributes, children }: CustomElement<HTMLUListElement>) => (
   <ul {...attributes}>
     <li>{children}</li>
   </ul>
 );
 
-const DefaultElement = ({ attributes, children }: any) => <p {...attributes}>{children}</p>;
+const DefaultElement = ({ attributes, children }: CustomElement<HTMLParagraphElement>) => (
+  <p {...attributes}>{children}</p>
+);
 
-const Leaf = ({ attributes, children, leaf, style }: any) => (
-  <span {...attributes} style={{ ...style, fontWeight: leaf.bold ? 'bold' : 'normal' }}>
+interface LeafProps extends RenderLeafProps {
+  style: React.HTMLAttributes<HTMLSpanElement>;
+}
+
+// type RenderLeafProps = Omit<LeafProps, 'style'>;
+
+const Leaf = ({ attributes, children, leaf, style }: LeafProps) => (
+  <span {...attributes} style={{ ...style, fontWeight: (leaf as any).bold ? 'bold' : 'normal' }}>
     {children}
   </span>
 );
+
+// interface RenderElementProps extends CustomElement<HTMLElement> {
+//   element: {
+//     type: string;
+//   };
+// }
 
 const SlatePageContainer: React.FC = () => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
   const [value, setValue] = useState<any[]>([{ type: 'paragraph', children: [{ text: '' }] }]);
 
-  const renderElement = useCallback((props: any) => {
-    switch (props.element.type) {
+  const renderElement = useCallback((props: RenderElementProps) => {
+    switch ((props.element as any).type) {
       case 'code':
         return <CodeElement {...props} />;
       case 'bullet':
@@ -53,13 +84,15 @@ const SlatePageContainer: React.FC = () => {
   }, []);
 
   const renderLeaf = useCallback(
-    (props: any) => (
+    (props: RenderLeafProps) => (
       <Leaf
-        style={{
-          fontWeight: props.leaf.bold ? 'bold' : '',
-          textDecoration: props.leaf.underline ? 'underline' : '',
-          fontStyle: props.leaf.italic ? 'italic' : '',
-        }}
+        style={
+          {
+            fontWeight: (props.leaf as any).bold ? 'bold' : '',
+            textDecoration: (props.leaf as any).underline ? 'underline' : '',
+            fontStyle: (props.leaf as any).italic ? 'italic' : '',
+          } as HTMLAttributes<HTMLSpanElement>
+        }
         {...props}
       />
     ),
@@ -78,7 +111,7 @@ const SlatePageContainer: React.FC = () => {
         }}
         renderElement={renderElement}
         renderLeaf={renderLeaf}
-        onKeyDown={(event: any) => {
+        onKeyDown={(event: React.KeyboardEvent) => {
           if (!event.ctrlKey) {
             return;
           }
@@ -86,7 +119,7 @@ const SlatePageContainer: React.FC = () => {
             case '`': {
               event.preventDefault();
               // 제네레이터로 구성되어 있음
-              const [match]: any = [
+              const [match] = [
                 ...Editor.nodes(editor, {
                   match: (n) => Element.isElement(n) && n.type === 'code',
                 }),
@@ -100,7 +133,7 @@ const SlatePageContainer: React.FC = () => {
             }
             case '*': {
               event.preventDefault();
-              const [bullet]: any = [
+              const [bullet] = [
                 ...Editor.nodes(editor, {
                   match: (n) => Element.isElement(n) && n.type === 'bullet',
                 }),
@@ -129,7 +162,7 @@ const SlatePageContainer: React.FC = () => {
 
 export default SlatePageContainer;
 
-const isFormatActive = (editor: any, format: any) => {
+const isFormatActive = (editor: BaseEditor & ReactEditor, format: any) => {
   const [match] = [
     ...Editor.nodes(editor, {
       match: (n: any) => n[format] === true,
@@ -139,7 +172,7 @@ const isFormatActive = (editor: any, format: any) => {
   return !!match;
 };
 
-const Portal = ({ children }: any) =>
+const Portal = ({ children }: { children: React.ReactNode }) =>
   // Portal은 부모 컴포넌트의 DOM 계층 구조 바깥에 있는 DOM 노드로 자식을 렌더링하는 최고의 방법을 제공합니다.
   //  첫 번째 인자(child)는 엘리먼트, 문자열, 혹은 fragment와 같은 어떤 종류이든 렌더링할 수 있는 React 자식입니다. 두 번째 인자(container)는 DOM 엘리먼트입니다.
   typeof document === 'object' ? ReactDOM.createPortal(children, document.body) : null;
@@ -171,6 +204,11 @@ const Menu = React.forwardRef(
   ),
 );
 
+interface NewType {
+  // eslint-disable-next-line no-unused-vars
+  (selection: BaseRange): boolean;
+}
+
 const HoveringToolbar = () => {
   const ref = useRef<HTMLDivElement | null>();
   const editor = useSlate();
@@ -186,7 +224,7 @@ const HoveringToolbar = () => {
     if (
       !selection ||
       !ReactEditor.isFocused(editor) ||
-      (Range as any)?.isCollapsed?.(selection) ||
+      (Range as { isCollapsed?: NewType })?.isCollapsed?.(selection) ||
       Editor.string(editor, selection) === ''
     ) {
       el.removeAttribute('style');

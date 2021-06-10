@@ -31,6 +31,7 @@ module.exports = {
     },
   },
   rules: {
+    'react/require-default-props': 'off',
     'no-nested-ternary': 'off',
     'implicit-arrow-linebreak': 'off',
     'react/display-name': 'off',
