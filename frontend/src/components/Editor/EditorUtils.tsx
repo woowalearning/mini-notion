@@ -1,5 +1,6 @@
 import React, { Ref, PropsWithChildren } from 'react'
 import ReactDOM from 'react-dom'
+import { BiBold, BiUnderline, BiItalic } from 'react-icons/bi';
 import { cx, css } from '@emotion/css'
 
 interface BaseProps {
@@ -23,25 +24,26 @@ export const Button = React.forwardRef(
             } & BaseProps
         >,
         ref: any
-    ) => (
-        <span
-            {...props}
-            ref={ref}
-            className={cx(
-                className,
-                css`
-          cursor: pointer;
-          color: ${reversed
-                        ? active
-                            ? 'white'
-                            : '#aaa'
-                        : active
-                            ? 'black'
-                            : '#ccc'};
-        `
-            )}
-        />
-    )
+    ) => {
+        return (
+            <span
+                {...props}
+                ref={ref}
+                className={cx(
+                    className,
+                    css`
+            cursor: pointer;
+            color: ${reversed
+                            ? active
+                                ? 'white'
+                                : '#aaa'
+                            : active
+                                ? 'black'
+                                : '#ccc'};
+            `
+                )}
+            />
+    )}
 )
 
 export const EditorValue = React.forwardRef(
@@ -105,21 +107,28 @@ export const Icon = React.forwardRef(
     (
         { className, ...props }: PropsWithChildren<BaseProps>,
         ref: any
-    ) => (
+    ) => {
+        let icon = <></>;
+        switch (props.children) {
+            case 'format_bold':
+                icon = <BiBold />
+                break;
+            case 'format_italic':
+                icon = <BiItalic />
+                break;
+            case 'format_underlined':
+                icon = <BiUnderline />
+                break;
+        }
+        return (
         <span
             {...props}
             ref={ref}
-            className={cx(
-                'material-icons',
-                className,
-                css`
-          font-size: 18px;
-          vertical-align: text-bottom;
-        `
-            )}
-        />
-    )
-)
+        >
+            {icon}
+        </span>
+    )}
+);
 
 export const Instruction = React.forwardRef(
     (
@@ -154,13 +163,13 @@ export const Menu = React.forwardRef(
             className={cx(
                 className,
                 css`
-          & > * {
-            display: inline-block;
-          }
-          & > * + * {
-            margin-left: 15px;
-          }
-        `
+                & > * {
+                    display: inline-block;
+                }
+                & > * + * {
+                    margin-left: 15px;
+                }
+                `
             )}
         />
     )
