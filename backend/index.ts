@@ -55,7 +55,9 @@ if (prod) {
   (sessionOption.cookie as any).proxy = true;
 }
 app.use(session(sessionOption as any));
+
 setup(app);
+
 app.get("/", ensureAuthenticated, (req, res, next) => {
   res.send("OK");
 });

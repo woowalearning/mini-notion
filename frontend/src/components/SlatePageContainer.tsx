@@ -1,3 +1,4 @@
+import { css, cx } from '@emotion/css';
 import React, {
   HTMLAttributes,
   PropsWithChildren,
@@ -9,7 +10,16 @@ import React, {
   useState,
 } from 'react';
 import ReactDOM from 'react-dom';
-import { BaseEditor, BaseRange, createEditor, Editor, Element, Text, Transforms } from 'slate';
+import {
+  BaseEditor,
+  BaseRange,
+  createEditor,
+  Descendant,
+  Editor,
+  Element,
+  Text,
+  Transforms,
+} from 'slate';
 import {
   Editable,
   ReactEditor,
@@ -19,10 +29,11 @@ import {
   useSlate,
   withReact,
 } from 'slate-react';
-import { cx, css } from '@emotion/css';
 
-type CustomElement<T> = { attributes: HTMLAttributes<T>; children: CustomText[]; type?: string };
-type CustomText = { text: string };
+type Format = 'bold' | 'underline' | 'italic';
+
+type CustomElement<T> = { attributes?: HTMLAttributes<T>; children: CustomText[]; type?: string };
+type CustomText = { text: string; italic?: boolean; bold?: boolean; underline?: boolean };
 
 declare module 'slate' {
   // eslint-disable-next-line no-unused-vars
@@ -56,7 +67,7 @@ interface LeafProps extends RenderLeafProps {
 // type RenderLeafProps = Omit<LeafProps, 'style'>;
 
 const Leaf = ({ attributes, children, leaf, style }: LeafProps) => (
-  <span {...attributes} style={{ ...style, fontWeight: (leaf as any).bold ? 'bold' : 'normal' }}>
+  <span {...attributes} style={{ ...style, fontWeight: leaf.bold ? 'bold' : 'normal' }}>
     {children}
   </span>
 );
@@ -67,13 +78,24 @@ const Leaf = ({ attributes, children, leaf, style }: LeafProps) => (
 //   };
 // }
 
+const initialValue: Descendant[] = [
+  {
+    type: 'paragraph',
+    children: [
+      {
+        text: 'This example shows how you can make a hovering menu appear above your content, which you can use to make text ',
+      },
+    ],
+  },
+];
+
 const SlatePageContainer: React.FC = () => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
-  const [value, setValue] = useState<any[]>([{ type: 'paragraph', children: [{ text: '' }] }]);
+  const [value, setValue] = useState<Descendant[]>(initialValue);
 
   const renderElement = useCallback((props: RenderElementProps) => {
-    switch ((props.element as any).type) {
+    switch (props.element.type) {
       case 'code':
         return <CodeElement {...props} />;
       case 'bullet':
@@ -88,9 +110,9 @@ const SlatePageContainer: React.FC = () => {
       <Leaf
         style={
           {
-            fontWeight: (props.leaf as any).bold ? 'bold' : '',
-            textDecoration: (props.leaf as any).underline ? 'underline' : '',
-            fontStyle: (props.leaf as any).italic ? 'italic' : '',
+            fontWeight: props.leaf.bold ? 'bold' : '',
+            textDecoration: props.leaf.underline ? 'underline' : '',
+            fontStyle: props.leaf.italic ? 'italic' : '',
           } as HTMLAttributes<HTMLSpanElement>
         }
         {...props}
@@ -162,13 +184,13 @@ const SlatePageContainer: React.FC = () => {
 
 export default SlatePageContainer;
 
-const isFormatActive = (editor: BaseEditor & ReactEditor, format: any) => {
+const isFormatActive = (editor: BaseEditor & ReactEditor, format: Format) => {
   const [match] = [
     ...Editor.nodes(editor, {
-      match: (n: any) => n[format] === true,
+      match: (n) => Text.isText(n) && n[format] === true,
       mode: 'all',
     }),
-  ] as any;
+  ];
   return !!match;
 };
 
@@ -181,14 +203,13 @@ interface BaseProps {
   className: string;
   [key: string]: unknown;
 }
-type OrNull<T> = T | null;
 
 // 스타일을 위한 코드입니다.
 const Menu = React.forwardRef(
-  ({ className, ...props }: PropsWithChildren<BaseProps>, ref: Ref<OrNull<HTMLDivElement>>) => (
+  ({ className, ...props }: PropsWithChildren<BaseProps>, ref: Ref<HTMLDivElement | undefined>) => (
     <div
       {...props}
-      ref={ref as any}
+      ref={ref as React.Ref<HTMLDivElement>}
       className={cx(
         className,
         css`
@@ -210,7 +231,7 @@ interface NewType {
 }
 
 const HoveringToolbar = () => {
-  const ref = useRef<HTMLDivElement | null>();
+  const ref = useRef<HTMLDivElement>();
   const editor = useSlate();
 
   useEffect(() => {
@@ -242,7 +263,7 @@ const HoveringToolbar = () => {
   return (
     <Portal>
       <Menu
-        ref={ref as any}
+        ref={ref}
         className={css`
           padding: 8px 7px 6px;
           position: absolute;
@@ -264,10 +285,8 @@ const HoveringToolbar = () => {
   );
 };
 
-const toggleFormat = (editor: any, format: any) => {
+const toggleFormat = (editor: BaseEditor & ReactEditor, format: Format) => {
   const isActive = isFormatActive(editor, format);
-  console.log('isActive', isActive, editor);
-
   Transforms.setNodes(editor, { [format]: isActive ? null : true }, { match: Text.isText, split: true });
 };
 
@@ -284,11 +303,11 @@ const Button = React.forwardRef(
         reversed: boolean;
       } & BaseProps
     >,
-    ref: Ref<OrNull<HTMLSpanElement>>,
+    ref: Ref<HTMLSpanElement>,
   ) => (
     <span
       {...props}
-      ref={ref as any}
+      ref={ref}
       className={cx(
         className,
         css`
@@ -300,13 +319,13 @@ const Button = React.forwardRef(
   ),
 );
 
-const FormatButton = ({ format }: { format: string }) => {
+const FormatButton = ({ format }: { format: Format }) => {
   const editor = useSlate();
   return (
     <Button
       reversed
       active={isFormatActive(editor, format)}
-      onMouseDown={(event: any) => {
+      onMouseDown={(event: React.MouseEvent) => {
         event.preventDefault();
         toggleFormat(editor, format);
       }}
